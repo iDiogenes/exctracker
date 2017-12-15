@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+################################
+#
+# build is a script used to build and push docker images
+#
+#
+# Version 0.1
+#
+################################
+
+set -e
+
+usage()
+{
+cat << EOF
+usage: ./build.sh [command options]
+
+OPTIONS:
+   -p      Push image after being built
+EOF
+
+exit 1
+}
+
+VERSION=$(cat VERSION)
+
+# get options
+while getopts "p" OPTION; do
+  case ${OPTION} in
+    p) #remove images and containers
+      P=1
+      ;;
+    \?) #unrecongnized option - show help
+      printf "\nOption -$OPTARG not allowed.\n"
+      usage
+      ;;
+  esac
+done
+
+docker build -t idiogenes/exctracker:${VERSION} .
+docker tag idiogenes/exctracker:${VERSION} idiogenes/exctracker:latest
+
+if [[ ${P} == 1 ]]; then
+    docker push idiogenes/exctracker:${VERSION}
+    docker push idiogenes/exctracker:latest
+fi
