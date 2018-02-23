@@ -23,5 +23,7 @@ RUN go get && \
 
 WORKDIR /go
 
+RUN mkdir /go/data
+
 # Use baseimage-docker's init process.
 CMD ["/sbin/my_init"]

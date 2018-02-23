@@ -1,11 +1,11 @@
 package main
 
 import (
-	"log"
 	"strconv"
 
 	"github.com/beldur/kraken-go-api-client"
 	"github.com/jsgoyette/gemini"
+	"github.com/pdepip/go-binance/binance"
 	gdax "github.com/preichenberger/go-gdax"
 )
 
@@ -27,6 +27,10 @@ type krakenExc struct {
 	client *krakenapi.KrakenApi
 }
 
+type binanceExc struct {
+	client *binance.Binance
+}
+
 type exchange struct {
 	bid  float64
 	ask  float64
@@ -37,7 +41,7 @@ type exchange struct {
 func (exc gdaxExc) get() exchange {
 	ticker, err := exc.client.GetTicker("BTC-USD")
 	if err != nil {
-		println(err.Error())
+		panic(err.Error())
 	}
 	return exchange{
 		bid:  ticker.Bid,
@@ -49,7 +53,7 @@ func (exc gdaxExc) get() exchange {
 func (exc geminiExc) get() exchange {
 	orderBook, err := exc.client.OrderBook("btcusd", 1, 1)
 	if err != nil {
-		log.Println(err)
+		panic(err)
 	}
 
 	return exchange{
@@ -62,7 +66,7 @@ func (exc geminiExc) get() exchange {
 func (exc krakenExc) get() exchange {
 	ticker, err := exc.client.Ticker(krakenapi.XXBTZUSD)
 	if err != nil {
-		log.Println(err)
+		panic(err)
 	}
 
 	ask, _ := strconv.ParseFloat(ticker.XXBTZUSD.Ask[0], 64)
@@ -72,6 +76,24 @@ func (exc krakenExc) get() exchange {
 		bid:  bid,
 		ask:  ask,
 		name: "kraken",
+	}
+}
+
+func (exc binanceExc) get() exchange {
+	query := binance.SymbolQuery{
+		Symbol: "BTCUSDT",
+	}
+
+	exc.client.GetBookTickers()
+	res, err := exc.client.GetLastPrice(query)
+	if err != nil {
+		panic(err)
+	}
+
+	return exchange{
+		bid:  res.Price,
+		ask:  res.Price,
+		name: "binance",
 	}
 }
 
