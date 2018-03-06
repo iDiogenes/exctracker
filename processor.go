@@ -14,10 +14,10 @@ func arbitrageCheck(exchanges exchanges) {
 	// Loop through exchanges and compare ask to bid in all other exchanges
 	for index := range exchanges {
 		for i := 0; i < exchangeSize; i++ {
-			if percentGain := calculatePercentGain(exchanges[i].bid, exchanges[index].ask); percentGain > pc && exchanges[index].name != exchanges[i].name {
+			if percentGain := calculatePercentGain(exchanges[index].ask, exchanges[i].bid); percentGain > pc && exchanges[index].name != exchanges[i].name {
 				var message string
-				message = "Buy BTC on " + exchanges[i].name + " for " + strconv.Itoa(int(exchanges[i].bid)) +
-					" and sell on " + exchanges[index].name + " for " + strconv.Itoa(int(exchanges[index].ask)) +
+				message = "Buy BTC on " + exchanges[i].name + " for " + strconv.Itoa(int(exchanges[i].ask)) +
+					" and sell on " + exchanges[index].name + " for " + strconv.Itoa(int(exchanges[index].bid)) +
 					" potential opportunity of ~" + strconv.FormatFloat(percentGain, 'f', 3, 64) + " percent"
 				log.Println(message)
 			}
@@ -25,7 +25,8 @@ func arbitrageCheck(exchanges exchanges) {
 	}
 }
 
-func calculatePercentGain(bid, ask float64) float64 {
-	percent := (ask - bid) / bid * 100
+func calculatePercentGain(ask, bid float64) float64 {
+	percent := (bid*(1-0.0025) - ask) / (2 * ask) * 100
+	log.Println(percent)
 	return percent
 }
