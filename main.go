@@ -37,6 +37,6 @@ func main() {
 		}
 		arbitrageCheck(exchanges)
 
-		time.Sleep(5 * time.Second)
+		time.Sleep(2 * time.Second)
 	}
 }
