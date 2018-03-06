@@ -27,6 +27,5 @@ func arbitrageCheck(exchanges exchanges) {
 
 func calculatePercentGain(ask, bid float64) float64 {
 	percent := (bid*(1-0.0025) - ask) / (2 * ask) * 100
-	log.Println(percent)
 	return percent
 }

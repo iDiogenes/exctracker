@@ -15,7 +15,7 @@ import (
 )
 
 func main() {
-	log.Println("Starting Exchange Tracker.")
+	log.Println("Starting exchange tracker looking for opportunities greater than " + os.Getenv("PC"))
 	logFile, err := os.OpenFile("data/arb_bps.txt", os.O_CREATE|os.O_APPEND|os.O_RDWR, 0644)
 	if err != nil {
 		panic(err)
